@@ -3,6 +3,7 @@ module Components.NavBar exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import View exposing (View)
+import Components.Md
 
 
 view :
@@ -23,3 +24,10 @@ view props =
             ]
         ]
     }
+
+-- viewMarkdown : String -> View msg
+-- viewMarkdown markdownContent =
+--     view
+--         { title = "Markdown Viewer"
+--         , body = [ div [class "mdcont"] Components.Md.view markdownContent ]
+--         }

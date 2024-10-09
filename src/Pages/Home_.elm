@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import View exposing (View)
 import Components.NavBar
-import Components.Asas
+import Components.Md
 import Shared.Msg exposing (Msg(..))
 
 type Msg = NoOp
@@ -21,10 +21,6 @@ page =
                 , p [] [ text "This is the home page of our website." ]
                 , p [] [ text "Feel free to explore the other sections." ]
                 ]
-            ],
-            fimph
+            ]
         ]
     }
-
-fimph: Html msg
-fimph = div [] [ text "umm" ]
