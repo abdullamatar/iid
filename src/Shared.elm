@@ -20,6 +20,8 @@ import Shared.Msg
 import Lib.Posts as Posts
 import Dict exposing (Dict)
 import Debug
+import Lib.Api as Api
+-- import Main.Pages.Model as Model
 -- FLAGS
 
 
@@ -42,25 +44,46 @@ decoder =
 type alias Model =
     Shared.Model.Model
 
+-- init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
+-- init flagsResult route =
+--     let
+--         _ =
+--             Debug.log "FLAGS" flagsResult
+
+--     in
+--         -- ({posts = Dict.empty}, Effect.none)
+--         case flagsResult of
+--             Ok flags ->
+--                 ( { mdData = flags.posts }
+--                 , Effect.none
+--                 )
+
+--             Err _ ->
+--                 ( { mdData = Dict.empty }
+--                 , Effect.none
+--                 )
+
+
+
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
+-- init _ _ = ({mdData=Dict.empty,  Effect.none })
 init flagsResult route =
     let
         _ =
-            Debug.log "FLAGS" flagsResult
+            ()
+            -- Debug.log "FLAGS" flagsResult
 
     in
-        -- ({posts = Dict.empty}, Effect.none)
         case flagsResult of
             Ok flags ->
-                ( { posts = flags.posts }
+                ( {posts = flags.posts}
                 , Effect.none
                 )
 
             Err _ ->
-                ( { posts = Dict.empty }
+                ( {posts = Dict.empty}
                 , Effect.none
                 )
-
 
 -- UPDATE
 
