@@ -4,8 +4,6 @@ module Pages.Post exposing (Model, Msg, page)
 -- import String
 -- iid
 
-import Browser.Events
-import Browser.Navigation as Nav
 import Components.NavBar
 import Dict exposing (Dict)
 import Effect exposing (..)
@@ -49,6 +47,7 @@ fetchMarkdown_ fname =
 
 
 
+-- arg w fname...
 -- Http err helper
 
 
@@ -94,25 +93,26 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MdPresent fname (Ok mdContent) ->
-            let
-                newMdData =
-                    Dict.insert fname (Api.Success mdContent) model.mdData
-            in
-            ( { model | mdData = newMdData }, Cmd.none )
+        MdPresent fname (Ok mdData) ->
+            ( { model | mdData = Api.Success (Dict.singleton fname mdData) }, Cmd.none )
 
-        MdPresent fname (Err httpError) ->
-            let
-                newMdData =
-                    Dict.insert fname (Api.Failure httpError) model.mdData
-            in
-            ( { model | mdData = newMdData }, Cmd.none )
-
-        SelectPost fname ->
-            ( { model | selectedPost = Just fname }, Cmd.none )
+        MdPresent _ (Err httpError) ->
+            ( { model | mdData = Api.Failure httpError }, Cmd.none )
 
         BackToList ->
             ( { model | selectedPost = Nothing }, Cmd.none )
+
+
+
+-- Assume fetchFilesList and other functions are defined appropriately
+-- !WORKING MUST CHANGE BACK MSG TYPE ABOVE TO ACCOMODATE FNAME
+-- update: Msg -> Model -> ( Model, Cmd Msg )
+-- update msg model =
+--     case msg of
+--         MdPresent (Ok mdData) ->
+--             ( { model | mdData = Api.Success mdData }, Cmd.none )
+--         MdPresent (Err httpError) ->
+--             ( { model | mdData = Api.Failure httpError }, Cmd.none )
 
 
 view : Model -> View Msg
