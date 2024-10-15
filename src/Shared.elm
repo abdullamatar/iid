@@ -3,6 +3,7 @@ module Shared exposing
     , Model, Msg
     , init, update, subscriptions
     )
+
 {-|
 
 @docs Flags, decoder
@@ -11,22 +12,28 @@ module Shared exposing
 
 -}
 
+-- import Debug
+-- import Lib.Api as Api
+-- import Route.Path
+
+import Dict exposing (Dict)
 import Effect exposing (Effect)
 import Json.Decode
 import Route exposing (Route)
-import Route.Path
 import Shared.Model
 import Shared.Msg
-import Lib.Posts as Posts
-import Dict exposing (Dict)
-import Debug
-import Lib.Api as Api
+
+
+
 -- import Main.Pages.Model as Model
 -- FLAGS
 
 
 type alias Flags =
-    {posts: Dict String String}
+    { posts : Dict String String }
+
+
+
 -- type alias Flags =
 --     {message:}
 
@@ -44,12 +51,13 @@ decoder =
 type alias Model =
     Shared.Model.Model
 
+
+
 -- init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
 -- init flagsResult route =
 --     let
 --         _ =
 --             Debug.log "FLAGS" flagsResult
-
 --     in
 --         -- ({posts = Dict.empty}, Effect.none)
 --         case flagsResult of
@@ -57,33 +65,38 @@ type alias Model =
 --                 ( { mdData = flags.posts }
 --                 , Effect.none
 --                 )
-
 --             Err _ ->
 --                 ( { mdData = Dict.empty }
 --                 , Effect.none
 --                 )
 
 
-
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
+
+
+
 -- init _ _ = ({mdData=Dict.empty,  Effect.none })
+
+
 init flagsResult route =
     let
         _ =
             ()
-            -- Debug.log "FLAGS" flagsResult
 
+        -- Debug.log "FLAGS" flagsResult
     in
-        case flagsResult of
-            Ok flags ->
-                ( {posts = flags.posts}
-                , Effect.none
-                )
+    case flagsResult of
+        Ok flags ->
+            ( { posts = flags.posts }
+            , Effect.none
+            )
 
-            Err _ ->
-                ( {posts = Dict.empty}
-                , Effect.none
-                )
+        Err _ ->
+            ( { posts = Dict.empty }
+            , Effect.none
+            )
+
+
 
 -- UPDATE
 

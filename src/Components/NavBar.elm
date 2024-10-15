@@ -2,8 +2,8 @@ module Components.NavBar exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import View exposing (View)
-import Components.Md
 
 
 view :
@@ -11,7 +11,6 @@ view :
     , body : List (Html msg)
     }
     -> View msg
-
 view props =
     { title = props.title
     , body =
@@ -20,14 +19,25 @@ view props =
                 [ a [ href "/" ] [ text "Home" ]
                 , a [ href "/post" ] [ text "Posts" ]
                 ]
-                , div [ class "page" ] props.body
+            , div [ class "page" ] props.body
             ]
         ]
     }
 
--- viewMarkdown : String -> View msg
--- viewMarkdown markdownContent =
---     view
---         { title = "Markdown Viewer"
---         , body = [ div [class "mdcont"] Components.Md.view markdownContent ]
---         }
+
+
+-- type alias Model msg =
+--     { title : String
+--     , body: List (Html msg)
+--     , onPostsClick : msg
+--     }
+-- view : Model msg -> View msg
+-- view model =
+-- { title = model.title
+-- ,body=
+--     nav [ class "navbar" ]
+--         [ a [ href "#", onClick model.onPostsClick ] [ text "Posts" ]
+--         , a [ href "#about" ] [ text "About" ]
+--         -- Add other links as needed
+--         ]
+-- }

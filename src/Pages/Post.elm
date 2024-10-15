@@ -1,32 +1,57 @@
-module Pages.Post exposing (page, Model, Msg)
+module Pages.Post exposing (Model, Msg, page)
 
 -- 'std' lib
-import View exposing (View)
+-- import String
+-- iid
+
+import Browser.Events
+import Browser.Navigation as Nav
+import Components.NavBar
+import Dict exposing (Dict)
+import Effect exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Shared exposing (..)
-import Effect exposing (..)
-import Route exposing (Route)
-import Page exposing (Page)
-import Http
-import Dict exposing (Dict)
--- import Http exposing (Error(..))
--- import String
-
--- iid
-import Components.NavBar
-import Components.Md exposing (view)
-import Lib.Api as Api
+import Html.Events exposing (..)
+import Http exposing (..)
+import Lib.Api as Api exposing (..)
 import MdParser
+import Page exposing (Page)
+import Route exposing (Route)
+import Shared exposing (..)
+import Url exposing (Url)
+import View exposing (View)
 
 
-type alias Model = {mdData : Api.Data (String)}
+type alias Model =
+    { mdData : Dict String (Api.Data String)
+    , selectedPost : Maybe String
+    }
+
 
 type Msg
-    = MdPresent (Result Http.Error (String))
+    = MdPresent String (Result Http.Error String)
+    | SelectPost String
+    | BackToList
+
+
+tempFNAMEs : List String
+tempFNAMEs =
+    [ "1.md", "2.md", "3.md", "4.md", "init.md" ]
+
+
+
+-- arg w fname...
+
+
+fetchMarkdown_ : String -> Cmd Msg
+fetchMarkdown_ fname =
+    Api.fetchMarkdown fname { onResponse = MdPresent fname }
+
 
 
 -- Http err helper
+
+
 httpErrorMatcher : Http.Error -> String
 httpErrorMatcher httpError =
     case httpError of
@@ -45,17 +70,49 @@ httpErrorMatcher httpError =
         Http.BadBody body ->
             "Failed to parse response: " ++ body
 
-init :  ( Model, Cmd Msg )
-init  =
-    ( { mdData = Api.Loading }, Api.fetchMarkdown "init.md"  { onResponse = MdPresent})
 
-update: Msg -> Model -> ( Model, Cmd Msg )
+getShortDescription : String -> String
+getShortDescription mdContent =
+    -- remove hashtag
+    mdContent
+        |> String.lines
+        |> List.map (String.replace "#" "")
+        |> List.head
+        |> Maybe.withDefault ""
+        |> String.left 100
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( { mdData = Dict.fromList (List.map (\fname -> ( fname, Api.Loading )) tempFNAMEs)
+      , selectedPost = Nothing
+      }
+    , List.map fetchMarkdown_ tempFNAMEs |> Cmd.batch
+    )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MdPresent (Ok mdData) ->
-            ( { model | mdData = Api.Success mdData }, Cmd.none )
-        MdPresent (Err httpError) ->
-            ( { model | mdData = Api.Failure httpError }, Cmd.none )
+        MdPresent fname (Ok mdContent) ->
+            let
+                newMdData =
+                    Dict.insert fname (Api.Success mdContent) model.mdData
+            in
+            ( { model | mdData = newMdData }, Cmd.none )
+
+        MdPresent fname (Err httpError) ->
+            let
+                newMdData =
+                    Dict.insert fname (Api.Failure httpError) model.mdData
+            in
+            ( { model | mdData = newMdData }, Cmd.none )
+
+        SelectPost fname ->
+            ( { model | selectedPost = Just fname }, Cmd.none )
+
+        BackToList ->
+            ( { model | selectedPost = Nothing }, Cmd.none )
 
 
 view : Model -> View Msg
@@ -63,54 +120,78 @@ view model =
     Components.NavBar.view
         { title = "Post"
         , body =
-        case model.mdData of
-            Api.Loading ->
-                [ text "Loading..." ]
-            Api.Success mdData ->
-                [MdParser.parseAndRenderMd mdData]
-            Api.Failure httpError ->
-                [ text ("Failed to load content: " ++ httpErrorMatcher httpError) ]
+            case model.selectedPost of
+                Nothing ->
+                    [ div [ class "post-grid" ]
+                        (model.mdData
+                            |> Dict.toList
+                            |> List.map
+                                (\( fname, data ) ->
+                                    case data of
+                                        Api.Loading ->
+                                            div [] [ text ("Loading " ++ fname ++ "...") ]
 
-                -- case httpError of
-                --     Http.BadUrl url ->
-                --         [text ("The URL " ++ url ++ " was invalid")]
-                --     Http.Timeout ->
-                --         [text "Unable to reach the server, try again"]
-                --     Http.NetworkError ->
-                --         [text "Unable to reach the server, check your network connection"]
-                --     Http.BadStatus 500 ->
-                --         [text "The server had a problem, try again later"]
-                --     Http.BadStatus 400 ->
-                --         [text "Verify your information and try again"]
-                --     Http.BadStatus _ ->
-                --         [text "Unknown error"]
-                --     Http.BadBody httpErrorMatcher ->
-                --         [text httpErrorMatcher]
-                -- Debug.log (httpError)
-                -- [ text ("Failed to load Markdown content: ") ]
+                                        Api.Success mdContent ->
+                                            div [ class "post-preview" ]
+                                                [ h2 [] [ text fname ]
+                                                , p [] [ text (getShortDescription mdContent) ]
+                                                , button [ onClick (SelectPost fname) ] [ text "Read more" ]
+                                                ]
+
+                                        Api.Failure httpError ->
+                                            div []
+                                                [ text ("Failed to load " ++ fname ++ ": " ++ httpErrorMatcher httpError) ]
+                                )
+                        )
+                    ]
+
+                Just fname ->
+                    case Dict.get fname model.mdData of
+                        Just (Api.Success mdContent) ->
+                            [ div [ class "post-content" ]
+                                [ button [ onClick BackToList ] [ text "Back to posts" ]
+                                , h2 [] [ text fname ]
+                                , MdParser.parseAndRenderMd mdContent
+                                ]
+                            ]
+
+                        Just Api.Loading ->
+                            [ text ("Loading " ++ fname ++ "...") ]
+
+                        Just (Api.Failure httpError) ->
+                            [ text ("Failed to load " ++ fname ++ ": " ++ httpErrorMatcher httpError) ]
+
+                        Nothing ->
+                            [ text ("Post not found: " ++ fname) ]
         }
 
 
--- mdView : String -> List (Html Msg)
--- We need to getch the list of markdown files from /static/kalam and put the title as the file name and display the content
 subscriptions : Model -> Sub Msg
-subscriptions model =Sub.none
+subscriptions model =
+    Sub.none
+
 
 
 {- shared – Stores any data you want to share across all your pages.
 
-In the Shared section, you'll learn how to customize what data should be available.
-route – Stores URL information, including things like route.params or route.query.
+   In the Shared section, you'll learn how to customize what data should be available.
+   route – Stores URL information, including things like route.params or route.query.
 
-In the Route section, you'll learn more about the other values on the route field. -}
+   In the Route section, you'll learn more about the other values on the route field.
+-}
+-- page : Page Model Msg
+-- page =
+--     Page.element
+--         { init = init
+--         , update = update
+--         , subscriptions = subscriptions
+--         , view = view
+--         }
+-- page : Shared.Model -> Route { a7a : String } -> Page Model Msg
 
--- page : Shared.Model -> Route {post: String} -> Page Model Msg
 
--- page: {post: String} ->  View Msg
--- page : () -> Page Model Msg
-page :  Page Model Msg
-
-page   =
+page : Page Model Msg
+page =
     Page.element
         { init = init
         , update = update

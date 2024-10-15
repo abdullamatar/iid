@@ -1,15 +1,19 @@
 module MdParser exposing (..)
-import Browser
-import File exposing (File)
-import Task
-import Html exposing (div, text, Html)
-import Platform.Cmd exposing (Cmd, batch)
-import Http
 
+-- import Browser
+-- import Task
+-- import Platform.Cmd exposing (Cmd, batch)
+-- import Dict exposing (Dict)
 --MD
-import Markdown.Parser exposing (parse)
+
+import File exposing (File)
+import Html exposing (Html, div, text)
+import Http
 import Markdown.Block exposing (Block)
-import Markdown.Renderer exposing (render, Renderer, defaultHtmlRenderer)
+import Markdown.Parser exposing (parse)
+import Markdown.Renderer exposing (Renderer, defaultHtmlRenderer, render)
+
+
 
 -- parseMd : String -> List Block -> Result String (List view)
 -- parseMd markdownContent =
@@ -20,12 +24,18 @@ import Markdown.Renderer exposing (render, Renderer, defaultHtmlRenderer)
 --     in
 --     render parsedContent
 
+
 type Msg
     = MarkdownLoaded (Result Http.Error String)
-    --| FetchMarkdown String
+
+
+
+--| FetchMarkdown String
+
 
 type alias Model =
     { markdownContent : String }
+
 
 parseAndRenderMd : String -> Html msg
 parseAndRenderMd markdownContent =
@@ -38,7 +48,23 @@ parseAndRenderMd markdownContent =
 
 
 
+-- parseAndRenderMd : Dict String String -> Html msg
+-- parseAndRenderMd markdownDict =
+--     let
+--         renderMarkdown (filename, markdownContent) =
+--             case parseMd markdownContent of
+--                 Ok htmlContent ->
+--                     div [] htmlContent
+--                 Err errMsg ->
+--                     div [] [ text ("Failed to parse markdown for " ++ filename ++ ": " ++ errMsg) ]
+--         renderedMarkdowns =
+--             Dict.toList markdownDict
+--                 |> List.map renderMarkdown
+--     in
+--     div [] renderedMarkdowns
 -- Parse Markdown content to a list of HTML blocks
+
+
 parseMd : String -> Result String (List (Html msg))
 parseMd markdownContent =
     let
