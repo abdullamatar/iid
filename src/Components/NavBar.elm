@@ -1,5 +1,6 @@
 module Components.NavBar exposing (..)
 
+import Browser.Navigation exposing (load)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)

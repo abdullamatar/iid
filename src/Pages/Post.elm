@@ -1,9 +1,11 @@
 module Pages.Post exposing (Model, Msg, page)
 
--- 'std' lib
 -- import String
 -- iid
+-- import Route exposing (Route)
+-- import Url exposing (Url)
 
+import Browser.Navigation exposing (load)
 import Components.NavBar
 import Dict exposing (Dict)
 import Effect exposing (..)
@@ -14,9 +16,7 @@ import Http exposing (..)
 import Lib.Api as Api exposing (..)
 import MdParser
 import Page exposing (Page)
-import Route exposing (Route)
 import Shared exposing (..)
-import Url exposing (Url)
 import View exposing (View)
 
 
@@ -93,26 +93,25 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MdPresent fname (Ok mdData) ->
-            ( { model | mdData = Api.Success (Dict.singleton fname mdData) }, Cmd.none )
+        MdPresent fname (Ok mdContent) ->
+            let
+                newMdData =
+                    Dict.insert fname (Api.Success mdContent) model.mdData
+            in
+            ( { model | mdData = newMdData }, Cmd.none )
 
-        MdPresent _ (Err httpError) ->
-            ( { model | mdData = Api.Failure httpError }, Cmd.none )
+        MdPresent fname (Err httpError) ->
+            let
+                newMdData =
+                    Dict.insert fname (Api.Failure httpError) model.mdData
+            in
+            ( { model | mdData = newMdData }, Cmd.none )
+
+        SelectPost fname ->
+            ( { model | selectedPost = Just fname }, Cmd.none )
 
         BackToList ->
             ( { model | selectedPost = Nothing }, Cmd.none )
-
-
-
--- Assume fetchFilesList and other functions are defined appropriately
--- !WORKING MUST CHANGE BACK MSG TYPE ABOVE TO ACCOMODATE FNAME
--- update: Msg -> Model -> ( Model, Cmd Msg )
--- update msg model =
---     case msg of
---         MdPresent (Ok mdData) ->
---             ( { model | mdData = Api.Success mdData }, Cmd.none )
---         MdPresent (Err httpError) ->
---             ( { model | mdData = Api.Failure httpError }, Cmd.none )
 
 
 view : Model -> View Msg
