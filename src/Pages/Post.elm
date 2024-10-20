@@ -1,11 +1,6 @@
 module Pages.Post exposing (Model, Msg, page)
 
--- import String
--- iid
--- import Route exposing (Route)
--- import Url exposing (Url)
-
-import Browser.Navigation exposing (load)
+import Browser.Navigation exposing (Key, load, pushUrl)
 import Components.NavBar
 import Dict exposing (Dict)
 import Effect exposing (..)
@@ -16,7 +11,9 @@ import Http exposing (..)
 import Lib.Api as Api exposing (..)
 import MdParser
 import Page exposing (Page)
+import Regex exposing (Regex, find)
 import Shared exposing (..)
+import Url exposing (Url)
 import View exposing (View)
 
 
@@ -37,18 +34,9 @@ tempFNAMEs =
     [ "1.md", "2.md", "3.md", "4.md", "init.md" ]
 
 
-
--- arg w fname...
-
-
 fetchMarkdown_ : String -> Cmd Msg
 fetchMarkdown_ fname =
     Api.fetchMarkdown fname { onResponse = MdPresent fname }
-
-
-
--- arg w fname...
--- Http err helper
 
 
 httpErrorMatcher : Http.Error -> String
@@ -70,14 +58,61 @@ httpErrorMatcher httpError =
             "Failed to parse response: " ++ body
 
 
+
+-- !This would seach the entire file
+-- getShortDescription : String -> String
+-- getShortDescription mdContent =
+--     let
+--         commentRegex : Maybe Regex
+--         commentRegex =
+--             Regex.fromString "<!--(.*?)-->"
+--         extractComment : String -> Maybe String
+--         extractComment content =
+--             case find (Maybe.withDefault Regex.never commentRegex) content of
+--                 [] ->
+--                     Nothing
+--                 match :: _ ->
+--                     match.submatches |> List.head |> Maybe.andThen identity
+--     in
+--     mdContent
+--         |> extractComment
+--         |> Maybe.withDefault ""
+--         |> String.trim
+--         |> String.left 100
+
+
 getShortDescription : String -> String
 getShortDescription mdContent =
-    -- remove hashtag
+    -- * This is lazy
+    let
+        commentRegex : Maybe Regex
+        commentRegex =
+            Regex.fromString "<!--(.*?)-->"
+
+        -- "yield" lines in file
+        findFirstComment : List String -> Maybe String
+        findFirstComment lines =
+            case lines of
+                [] ->
+                    Nothing
+
+                x :: xs ->
+                    case find (Maybe.withDefault Regex.never commentRegex) x of
+                        [] ->
+                            findFirstComment xs
+
+                        match :: _ ->
+                            match.submatches
+                                |> List.head
+                                |> Maybe.andThen identity
+
+        ----------------------  -- Monad mentioned ^ :O
+    in
     mdContent
         |> String.lines
-        |> List.map (String.replace "#" "")
-        |> List.head
+        |> findFirstComment
         |> Maybe.withDefault ""
+        |> String.trim
         |> String.left 100
 
 
@@ -166,7 +201,7 @@ view model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -178,15 +213,6 @@ subscriptions model =
 
    In the Route section, you'll learn more about the other values on the route field.
 -}
--- page : Page Model Msg
--- page =
---     Page.element
---         { init = init
---         , update = update
---         , subscriptions = subscriptions
---         , view = view
---         }
--- page : Shared.Model -> Route { a7a : String } -> Page Model Msg
 
 
 page : Page Model Msg

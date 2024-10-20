@@ -1,12 +1,13 @@
 ## Galactic Algorithms
 
-C O N T E N T
+<!-- This is a short description about the contents of this file, what if everything you've ever known was a lie? How would you find out? What if you come home one day and the plant by the window looks slightly different? That stem never was that shade of green... Even the air feels different after you've begun noticing. You cannot stop noticing.-->
 
-# Test
+Sun Oct 20 12:03:56 PM +04 2024
+
+### Introduction
 
 This is a **test** markdown file.
 
-<!-- <img src="https://www.cityguide-dubai.com/fileadmin/_processed_/3/3/csm_img-worlds-of-adventures-teaser_40e4184da1.jpg" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" alt="a7a"></img> -->
 
 
 ![alt text](../imgs/graphicdesign.svg "Title")

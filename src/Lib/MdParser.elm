@@ -1,12 +1,5 @@
 module MdParser exposing (..)
 
--- import Browser
--- import Task
--- import Platform.Cmd exposing (Cmd, batch)
--- import Dict exposing (Dict)
--- import Markdown.Block exposing (Block)
--- import Platform.Cmd exposing (Cmd, batch)
-
 import Html exposing (Html, div, text)
 import Markdown.Parser exposing (parse)
 import Markdown.Renderer exposing (Renderer, defaultHtmlRenderer, render)

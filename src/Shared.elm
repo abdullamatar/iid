@@ -25,7 +25,6 @@ import Shared.Msg
 
 
 
--- import Main.Pages.Model as Model
 -- FLAGS
 
 
@@ -33,13 +32,17 @@ type alias Flags =
     { posts : Dict String String }
 
 
+type alias Model =
+    Shared.Model.Model
 
--- type alias Flags =
---     {message:}
+
+type alias Msg =
+    Shared.Msg.Msg
 
 
 decoder : Json.Decode.Decoder Flags
 decoder =
+    -- read json entry retruned by interop.js
     Json.Decode.map Flags
         (Json.Decode.field "posts" (Json.Decode.dict Json.Decode.string))
 
@@ -48,36 +51,7 @@ decoder =
 -- INIT
 
 
-type alias Model =
-    Shared.Model.Model
-
-
-
--- init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
--- init flagsResult route =
---     let
---         _ =
---             Debug.log "FLAGS" flagsResult
---     in
---         -- ({posts = Dict.empty}, Effect.none)
---         case flagsResult of
---             Ok flags ->
---                 ( { mdData = flags.posts }
---                 , Effect.none
---                 )
---             Err _ ->
---                 ( { mdData = Dict.empty }
---                 , Effect.none
---                 )
-
-
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
-
-
-
--- init _ _ = ({mdData=Dict.empty,  Effect.none })
-
-
 init flagsResult route =
     let
         _ =
@@ -99,10 +73,6 @@ init flagsResult route =
 
 
 -- UPDATE
-
-
-type alias Msg =
-    Shared.Msg.Msg
 
 
 update : Route () -> Msg -> Model -> ( Model, Effect Msg )

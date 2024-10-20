@@ -19,7 +19,7 @@ page =
         , body =
             [ div [ class "layout" ]
                 [ div [ class "page" ]
-                    [ h1 [] [ text "Welcome to the Home Page" ]
+                    [ h1 [] [ text "السَّلَامُ عَلَيْكُمْ" ]
                     , p [] [ text "This is the home page of our website." ]
                     , p [] [ text "Feel free to explore the other sections." ]
                     ]

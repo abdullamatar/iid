@@ -3,7 +3,6 @@ module Components.NavBar exposing (..)
 import Browser.Navigation exposing (load)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
 import View exposing (View)
 
 
@@ -15,30 +14,12 @@ view :
 view props =
     { title = props.title
     , body =
-        [ div [ class "layout" ]
+        [ div [ class "temp" ]
             [ nav [ class "navbar" ]
                 [ a [ href "/" ] [ text "Home" ]
-                , a [ href "/post" ] [ text "Posts" ]
+                , a [ href "/post", target "_self" ] [ text "Posts" ]
                 ]
-            , div [ class "page" ] props.body
+            , div [ class "post-body" ] props.body
             ]
         ]
     }
-
-
-
--- type alias Model msg =
---     { title : String
---     , body: List (Html msg)
---     , onPostsClick : msg
---     }
--- view : Model msg -> View msg
--- view model =
--- { title = model.title
--- ,body=
---     nav [ class "navbar" ]
---         [ a [ href "#", onClick model.onPostsClick ] [ text "Posts" ]
---         , a [ href "#about" ] [ text "About" ]
---         -- Add other links as needed
---         ]
--- }
