@@ -1,0 +1,155 @@
+/* General styling for the body */
+body {
+  background: linear-gradient(to bottom, rgb(78, 200, 240), grey);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.layout {
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.page {
+    padding: 20px;
+    border-radius: 15px;
+    /* box-shadow: 0 10px 20px rgba(186, 186, 186, 0.5); */
+}
+
+.page h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #ffd700;
+}
+
+.page p {
+    font-size: 1.5em;
+    margin: 10px 0;
+}
+
+/* Style for the navigation bar */
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* Center items vertically */
+  padding: 15px 30px;
+  background-color: rgba(105, 108, 126, 0.8);
+  /* Semi-transparent background */
+  border-bottom: 2px solid #ffffff;
+  /* Optional border */
+}
+
+/* Styling for the navigation links */
+.navbar a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 20px;
+  border-bottom: 2px solid transparent;
+  /* Bottom border for active state */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* Smooth transitions */
+}
+
+/* Hover effect for navigation links */
+.navbar a:hover {
+  background-color: #ddd;
+  /* Light background on hover */
+  color: black;
+  border-radius: 5px;
+  /* Rounded corners */
+}
+
+/* Active link styling */
+.navbar a.active {
+  border-bottom: 2px solid #ff6600;
+  /* Highlight active link with orange border */
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* Adjusts to screen size */
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Post preview styling */
+.post-preview {
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white */
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.post-preview h2 {
+  margin: 0;
+  color: #333;
+}
+
+.post-preview p {
+  color: #444;
+}
+
+.post-preview button {
+  background-color: #82bdfb;
+  /* Blue button */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.post-preview button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for selected post content */
+.post-content {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
+}
+
+.post-content button {
+  background-color: #f0abab;
+  /* Red back button */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.post-content button:hover {
+  background-color: #990000;
+}
+
+.post-content h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.post-content p {
+  color: #444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+}
