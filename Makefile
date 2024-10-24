@@ -1,11 +1,18 @@
+# Compiler flags
+CXX=g++
+CXXFLAGS=-std=c++23 -Wall -Wextra -Werror -pedantic -O3 
+LDFLAGS=-lssl -lcrypto -lpthread
+
+
 ELM_DIR = ./iid
 SERVER_DIR = ./server
 DIST_DIR = $(ELM_DIR)/dist
 TARGET_DIR = $(SERVER_DIR)/dist
 
 SERVER_MAIN = $(SERVER_DIR)/main.cpp
-
 SERVER_BIN = $(SERVER_DIR)/server
+
+.PHONY: all build-elm move-dist build-server clean
 
 all: build-elm move-dist build-server
 
@@ -20,11 +27,13 @@ move-dist:
 
 build-server:
 	@echo "Building C++ server..."
-	g++ $(SERVER_MAIN) -o $(SERVER_BIN)
+	$(CXX) $(CXXFLAGS) $(SERVER_MAIN) -o $(SERVER_BIN) $(LDFLAGS)
 
 
 clean:
-	@echo "Nothing is happening"
+	@echo "rm'ing server executable and static site build directory in $(SERVER_BIN) and $(TARGET_DIR)."
+	rm -rf $(SERVER_BIN) $(TARGET_DIR)
 
-
-.PHONY: all build-elm move-dist build-server clean
+clean-logs:
+	@echo "Clearing logfile..."
+	truncate -s 0 $(SERVER_DIR)/logs/server.log

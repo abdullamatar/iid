@@ -1,4 +1,7 @@
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "httplib.h"
+#include "logger.h"
+
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -9,7 +12,16 @@ bool file_exists(const std::string &path)
     return file.good();
 }
 
-// Helper function to read the contents of a file into a string
+/**
+ * @brief Reads the contents of a file into a string.
+ *
+ * This function opens a file specified by the given path, reads its entire
+ * contents into a string, and returns the string. If the file cannot be
+ * opened, the returned string will be empty.
+ *
+ * @param path The path to the file to be read.
+ * @return A string containing the contents of the file.
+ */
 std::string read_file(const std::string &path)
 {
     std::ifstream file(path);
@@ -20,13 +32,37 @@ std::string read_file(const std::string &path)
 
 int main()
 {
+    const bool DEBUG = 1;
+    Logger logger("server.log");
+
     httplib::Server server;
+    // httplib::SSLServer svr;
 
-    // Serve static files from the "dist" directory
-    server.set_mount_point("/", "./dist");
+    auto ret = server.set_mount_point("/", "./dist");
 
-    // Serve index.html for all unknown routes to handle client-side routing
+    if (!ret)
+    {
+        throw std::runtime_error("Failed to set mount point, incorrect path");
+    }
+    // logger
+
+    // server.set_logger([](const httplib::Request &req, const httplib::Response &res)
+    //                   {
+    //     if (req.path != "/status")
+    //     {
+    //         std::cout << req.method << " " << req.path << " -> " << res.status << std::endl;
+    //     } });
+
+    // lambdas cannot access local vars, pass var into "capture list", can capture by value, refr,
+    server.set_logger([&logger](const auto &req, const auto &res)
+                      {
+                          std::ostringstream logMsg;
+                          logMsg << req.method << " " << req.path << " -> " << res.status;
+                          logger.log(INFO, logMsg.str()); });
+
     server.set_file_extension_and_mimetype_mapping("html", "text/html");
+    server.set_file_extension_and_mimetype_mapping("svg", "image/svg+xml");
+
     server.Get(".*", [](const httplib::Request &req, httplib::Response &res)
                {
         std::string path = "./dist" + req.path;
@@ -37,8 +73,13 @@ int main()
             res.set_content(content, "text/html");
         } });
 
-    // Start the server
+    if (DEBUG)
+    {
+        std::cout << "Server is starting..." << std::endl;
+        std::cout << "Listening on http://localhost:8080" << std::endl;
+    }
     server.listen("0.0.0.0", 8080);
+    // std::cout << ""<< server.;
 
     return 0;
 }

@@ -1,3 +1,6 @@
 .vscode
 dist
-server
+server/server
+
+/logs
+*.log
