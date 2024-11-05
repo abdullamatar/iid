@@ -1,6 +1,7 @@
 module MdParser exposing (..)
 
 import Html exposing (Html, div, text)
+import Html.Attributes exposing (href)
 import Markdown.Parser exposing (parse)
 import Markdown.Renderer exposing (Renderer, defaultHtmlRenderer, render)
 
@@ -62,3 +63,13 @@ parseMd markdownContent =
 
         Err _ ->
             Err "Failed to parse markdown content"
+
+
+
+-- customRenderInline : Inline -> Html msg
+-- customRenderInline inline =
+--     case inline of
+--         Link url title inlines ->
+--             a [ Html.Attributes.href url, Html.Attributes.target "_blank" ] (List.map customRenderInline inlines)
+--         _ ->
+--             defaultHtmlRenderer.renderInline inline

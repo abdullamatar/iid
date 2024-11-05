@@ -1,6 +1,6 @@
 .vscode
 dist
 server/server
-
+/node_modules
 /logs
 *.log

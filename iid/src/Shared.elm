@@ -12,14 +12,10 @@ module Shared exposing
 
 -}
 
--- import Debug
--- import Lib.Api as Api
--- import Route.Path
-
-import Dict exposing (Dict)
 import Effect exposing (Effect)
 import Json.Decode
 import Route exposing (Route)
+import Route.Path
 import Shared.Model
 import Shared.Msg
 
@@ -29,26 +25,22 @@ import Shared.Msg
 
 
 type alias Flags =
-    { posts : Dict String String }
-
-
-type alias Model =
-    Shared.Model.Model
-
-
-type alias Msg =
-    Shared.Msg.Msg
+    { temp : String }
 
 
 decoder : Json.Decode.Decoder Flags
 decoder =
     -- read json entry retruned by interop.js
     Json.Decode.map Flags
-        (Json.Decode.field "posts" (Json.Decode.dict Json.Decode.string))
+        (Json.Decode.field "temp" Json.Decode.string)
 
 
 
 -- INIT
+
+
+type alias Model =
+    Shared.Model.Model
 
 
 init : Result Json.Decode.Error Flags -> Route () -> ( Model, Effect Msg )
@@ -57,22 +49,20 @@ init flagsResult route =
         _ =
             ()
 
+        -- !cannot debug in prod, who wouldve thought.
         -- Debug.log "FLAGS" flagsResult
     in
-    case flagsResult of
-        Ok flags ->
-            ( { posts = flags.posts }
-            , Effect.none
-            )
-
-        Err _ ->
-            ( { posts = Dict.empty }
-            , Effect.none
-            )
+    ( {}
+    , Effect.none
+    )
 
 
 
 -- UPDATE
+
+
+type alias Msg =
+    Shared.Msg.Msg
 
 
 update : Route () -> Msg -> Model -> ( Model, Effect Msg )

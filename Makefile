@@ -1,6 +1,6 @@
 # Compiler flags
 CXX=g++
-CXXFLAGS=-std=c++23 -Wall -Wextra -Werror -pedantic -O3 
+CXXFLAGS=-std=c++23 -Wall -Wextra -Werror -pedantic -O3
 LDFLAGS=-lssl -lcrypto -lpthread
 
 

@@ -13,7 +13,6 @@ import MdParser
 import Page exposing (Page)
 import Regex exposing (Regex, find)
 import Shared exposing (..)
-import Url exposing (Url)
 import View exposing (View)
 
 
@@ -59,7 +58,7 @@ httpErrorMatcher httpError =
 
 
 
--- !This would seach the entire file
+-- !This would search the entire file
 -- getShortDescription : String -> String
 -- getShortDescription mdContent =
 --     let
@@ -113,7 +112,14 @@ getShortDescription mdContent =
         |> findFirstComment
         |> Maybe.withDefault ""
         |> String.trim
-        |> String.left 100
+        |> (\s -> String.left 100 s ++ "...")
+
+
+addTargetBlank : String -> String
+addTargetBlank content =
+    -- TODO: Why isnt this working
+    -- Insert target="_blank" after each <a href="..."> tag
+    String.replace "<a href=" "<a target=\"_blank\" href=" content
 
 
 init : ( Model, Cmd Msg )
@@ -151,6 +157,11 @@ update msg model =
 
 view : Model -> View Msg
 view model =
+    let
+        title : String -> String
+        title fname =
+            Maybe.withDefault "NoTitle" (List.head (String.split "." fname))
+    in
     Components.NavBar.view
         { title = "Post"
         , body =
@@ -167,7 +178,7 @@ view model =
 
                                         Api.Success mdContent ->
                                             div [ class "post-preview" ]
-                                                [ h2 [] [ text fname ]
+                                                [ h2 [] [ text (title fname) ]
                                                 , p [] [ text (getShortDescription mdContent) ]
                                                 , button [ onClick (SelectPost fname) ] [ text "Read more" ]
                                                 ]
@@ -184,8 +195,10 @@ view model =
                         Just (Api.Success mdContent) ->
                             [ div [ class "post-content" ]
                                 [ button [ onClick BackToList ] [ text "Back to posts" ]
-                                , h2 [] [ text fname ]
-                                , MdParser.parseAndRenderMd mdContent
+                                , h2 [] [ text (Maybe.withDefault "title" (List.head (String.split "." fname))) ]
+
+                                -- Maybe.withDefault "title" (List.head (String.split "." fname))
+                                , MdParser.parseAndRenderMd (addTargetBlank mdContent)
                                 ]
                             ]
 
