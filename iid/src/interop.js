@@ -10,4 +10,4 @@ export const flags = ({ env }) => {
 
 // called after elmapp start
 
-export const onReady = ({ app, env }) => { "mimis" }
+export const onReady = ({ app, env }) => { "I AM A STRING READ ME" }

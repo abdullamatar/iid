@@ -18,19 +18,17 @@ page =
         , body =
             [ div [ class "layout" ]
                 [ div [ class "page" ]
-                    [ div [ class "overlay-container" ]
-                        [ div [ class "welcome-text" ]
-                            [ h1 [] [ text "السَّلَامُ عَلَيْكُمْ" ]
-                            , p [] [ text "This website is under development and will be a place where I share things I find interesting." ]
-                            , p []
-                                [ text "Please take a look at the "
-                                , a [ href "/post" ] [ text "posts" ]
-                                , text ", and share any thoughts or feedback "
-                                , a [ href "https://github.com/abdullamatar/iid/issues/new", target "_blank" ] [ text "here." ]
-                                ]
+                    [ div [ class "welcome-text" ]
+                        [ h1 [] [ text "السَّلَامُ عَلَيْكُمْ" ]
+                        , p [] [ text "This website is under development and will be a place where I share things I find interesting." ]
+                        , p []
+                            [ text "Please take a look at the "
+                            , a [ href "/post" ] [ text "posts" ]
+                            , text ", and share any thoughts or feedback "
+                            , a [ href "https://github.com/abdullamatar/iid/issues/new", target "_blank" ] [ text "here." ]
                             ]
-                        , Html.node "forest-demo" [] []
                         ]
+                    , Html.node "forest-demo" [] []
                     ]
                 ]
             ]

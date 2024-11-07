@@ -10,15 +10,14 @@ window.customElements.define("forest-demo", class extends HTMLElement {
             width: window.innerWidth,
             height: window.innerHeight
         }
-
         let camera, controls, scene, renderer
         let self = this
         init()
         animate()
         function init() {
             scene = new THREE.Scene()
-            scene.background = new THREE.Color(0x000000)
-            scene.fog = new THREE.Fog(0xFFFFFF, 1, 5000)
+            scene.background = new THREE.Color(0x6082B6)
+            scene.fog = new THREE.Fog(0x036454F, 1, 5000)
 
             renderer = new THREE.WebGLRenderer({ antialias: true })
 
@@ -42,57 +41,96 @@ window.customElements.define("forest-demo", class extends HTMLElement {
 
 
             // Create a white sphere with a placeholder material
-            const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const tl = new THREE.TextureLoader();
+            const texture = tl.load('./static/imgs/cubes.png');
+
+            const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xfdd017, map: texture });
+
             const sphere = new THREE.Mesh(
                 new THREE.SphereGeometry(100, 100, 100),
                 whiteMaterial
             );
-            sphere.position.set(-700, 150, -400);
+            sphere.position.set(-900, 300, -400);
             scene.add(sphere);
 
-            // Load the SVG and create a texture
-            const loader = new SVGLoader();
-            loader.load(
-                '../../static/imgs/dallecubes.svg',
-                function (data) {
-                    const paths = data.paths;
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
+            // function loadSVGAsGeometry() {
+            //     const loader = new SVGLoader();
 
-                    // Set canvas size
-                    canvas.width = 1024;
-                    canvas.height = 1024;
+            //     loader.load(
+            //         './static/imgs/dallecubes.svg',
+            //         function (data) {
+            //             const paths = data.paths;
+            //             const group = new THREE.Group();
 
-                    // Draw SVG paths onto the canvas
-                    paths.forEach((path) => {
-                        const fillColor = path.userData.style.fill;
-                        if (fillColor !== undefined && fillColor !== 'none') {
-                            context.fillStyle = fillColor;
-                            const shapes = SVGLoader.createShapes(path);
-                            shapes.forEach((shape) => {
-                                const shapePath = shape.getPoints();
-                                context.beginPath();
-                                context.moveTo(shapePath[0].x, shapePath[0].y);
-                                for (let i = 1; i < shapePath.length; i++) {
-                                    context.lineTo(shapePath[i].x, shapePath[i].y);
-                                }
-                                context.closePath();
-                                context.fill();
-                            });
-                        }
-                    });
+            //             for (let i = 0; i < paths.length; i++) {
+            //                 const path = paths[i];
+            //                 const material = new THREE.MeshBasicMaterial({
+            //                     color: path.color ? path.color : 0x546E7A,
+            //                     side: THREE.DoubleSide,
+            //                     depthWrite: false,
+            //                     transparent: true
+            //                 });
 
-                    // Create a texture from the canvas
-                    const texture = new THREE.CanvasTexture(canvas);
-                    sphere.material.map = texture;
-                    sphere.material.needsUpdate = true;
-                },
-                undefined,
-                function (err) {
-                    console.error('An error occurred loading the SVG', err);
-                }
-            );
+            //                 const shapes = SVGLoader.createShapes(path);
 
+            //                 for (let j = 0; j < shapes.length; j++) {
+            //                     const shape = shapes[j];
+            //                     const geometry = new THREE.ShapeGeometry(shape);
+            //                     const mesh = new THREE.Mesh(geometry, material);
+            //                     group.add(mesh);
+            //                 }
+            //             }
+
+            //             // Add the SVG group to the sphere or scene as needed
+            //             mapSVGToSphere(group);
+
+            //             // sphere.add(group);
+            //         },
+            //         undefined,
+            //         function (error) {
+            //             console.error('Error loading SVG with SVGLoader:', error);
+            //         }
+            //     );
+            // }
+            // loadSVGAsGeometry();
+
+            // function mapSVGToSphere(group) {
+            //     const sphereRadius = 100;
+
+            //     // Position the group to align with the sphere
+            //     group.position.set(-700, 150, -400);
+
+            //     group.traverse(function (child) {
+            //         if (child.isMesh) {
+            //             const geometry = child.geometry;
+            //             const positionAttribute = geometry.attributes.position;
+            //             const vertex = new THREE.Vector3();
+
+            //             for (let i = 0; i < positionAttribute.count; i++) {
+            //                 vertex.fromBufferAttribute(positionAttribute, i);
+
+            //                 // Normalize coordinates
+            //                 const u = (vertex.x - geometry.boundingBox.min.x) / (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+            //                 const v = (vertex.y - geometry.boundingBox.min.y) / (geometry.boundingBox.max.y - geometry.boundingBox.min.y);
+
+            //                 // Convert to spherical coordinates
+            //                 const theta = u * Math.PI * 2; // Longitude
+            //                 const phi = v * Math.PI;       // Latitude
+
+            //                 // Map onto sphere
+            //                 const x = sphereRadius * Math.sin(phi) * Math.cos(theta);
+            //                 const y = sphereRadius * Math.cos(phi);
+            //                 const z = sphereRadius * Math.sin(phi) * Math.sin(theta);
+
+            //                 // Adjust for sphere's position
+            //                 positionAttribute.setXYZ(i, x - 700, y + 150, z - 400);
+            //             }
+
+            //             positionAttribute.needsUpdate = true;
+            //             geometry.computeVertexNormals();
+            //         }
+            //     });
+            // }
 
             //world
             const geometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1)
@@ -114,7 +152,7 @@ window.customElements.define("forest-demo", class extends HTMLElement {
             dirlight1.position.set(1, 1, 1)
             scene.add(dirlight1)
 
-            const dirlight2 = new THREE.DirectionalLight(0xffaa00)
+            const dirlight2 = new THREE.DirectionalLight(0xF57F17)
             dirlight2.position.set(-1, -1, -1)
             scene.add(dirlight2)
 
