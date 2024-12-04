@@ -167,7 +167,7 @@ view model =
         , body =
             case model.selectedPost of
                 Nothing ->
-                    [ div [ class "post-container post-grid" ]
+                    [ div [ class "post-grid" ]
                         (model.mdData
                             |> Dict.toList
                             |> List.map
@@ -199,6 +199,8 @@ view model =
 
                                 -- Maybe.withDefault "title" (List.head (String.split "." fname))
                                 , MdParser.parseAndRenderMd (addTargetBlank mdContent)
+
+                                -- , p [] [ MdParser.parseAndRenderMd (addTargetBlank mdContent) ]
                                 ]
                             ]
 

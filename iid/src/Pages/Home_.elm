@@ -16,7 +16,7 @@ page =
     Components.NavBar.view
         { title = "APTTMH"
         , body =
-            [ div [ class "layout" ]
+            [ div [ class "homewrapper" ]
                 [ div [ class "page" ]
                     [ div [ class "welcome-text" ]
                         [ h1 [] [ text "السَّلَامُ عَلَيْكُمْ" ]
